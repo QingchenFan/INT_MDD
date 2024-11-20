@@ -22,7 +22,7 @@ for i in range(0,246):
 pvalue = np.array(box)
 np.savetxt('pvalue.txt',pvalue)
 
-tpath = '/Users/qingchen/Documents/Data/template/BrainnetomeAtlas/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.BN_Atlas.32k_fs_LR.dlabel.nii'
+tpath = '/Users/qingchen/Documents/Step_1st_Data/template/BrainnetomeAtlas/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.BN_Atlas.32k_fs_LR.dlabel.nii'
 template = tpath
 template = nib.load(template)
 label=template.get_fdata()

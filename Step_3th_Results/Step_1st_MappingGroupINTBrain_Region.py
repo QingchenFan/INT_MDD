@@ -8,7 +8,7 @@ from scipy.io import savemat
 from nilearn import plotting
 import scipy.io as sio
 
-tpath = '/Users/qingchen/Documents/Data/template/BrainnetomeAtlas/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.BN_Atlas.32k_fs_LR.dlabel.nii'
+tpath = '/Users/qingchen/Documents/Step_1st_Data/template/BrainnetomeAtlas/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.BN_Atlas.32k_fs_LR.dlabel.nii'
 template = tpath
 template = nib.load(template)
 label=template.get_fdata()

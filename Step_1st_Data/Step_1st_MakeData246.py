@@ -110,8 +110,8 @@ def calculate_FC(dpath,tpath,atlaspath,regions):
     return resFC,vertexsubc
 
 datapath = '/Volumes/QCI/NormativeModel/BrainProject/MDDdtseriesnii/*/*ap*'
-tpath = '/Users/qingchen/Documents/Data/template/BrainnetomeAtlas/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.BN_Atlas.32k_fs_LR.dlabel.nii'
-atlaspath = '/Users/qingchen/Documents/Data/template/BrainnetomeAtlas/BN_Atlas_246_2mm.nii.gz'
+tpath = '/Users/qingchen/Documents/Step_1st_Data/template/BrainnetomeAtlas/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.BN_Atlas.32k_fs_LR.dlabel.nii'
+atlaspath = '/Users/qingchen/Documents/Step_1st_Data/template/BrainnetomeAtlas/BN_Atlas_246_2mm.nii.gz'
 data = glob.glob(datapath)
 
 for i in data:
