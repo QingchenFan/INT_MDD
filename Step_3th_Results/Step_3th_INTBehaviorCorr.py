@@ -3,9 +3,9 @@ import numpy as np
 from scipy.stats import pearsonr
 from scipy.stats import spearmanr
 import statsmodels.stats.multitest as smm
-data = pd.read_csv("/Volumes/QC/INT/INT_BN246_HC135BP_allMDD/Results/Data135DLMDD_PHQ9_final.csv")
+data = pd.read_csv("/Volumes/QC/INT/INT_BN246_HC135BP_allMDD/Results/AllData_HAMD_final.csv")
 
-behscore = np.array(data['PHQ9'])
+behscore = np.array(data['HAMD'])
 
 brainRegion = data.columns.tolist()
 del brainRegion[:2]
@@ -44,4 +44,4 @@ result_df = pd.DataFrame({
 })
 
 # 将结果保存到CSV文件中，可根据实际需求修改文件路径及文件名
-result_df.to_csv('./PHQ9_results.csv', index=False)
+result_df.to_csv('./AllData_HAMD_results.csv', index=False)

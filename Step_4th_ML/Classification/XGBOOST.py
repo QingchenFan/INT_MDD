@@ -5,31 +5,44 @@ import xgboost as xgb
 import numpy as np
 import pandas as pd
 
+# Data = pd.read_csv("/Volumes/QC/INT/INT_BN246_HC135BP_allMDD/Results/INTvalue_HCMDD.csv")
+#
+# brainRegion = Data.columns.tolist()
+# del brainRegion[:2]
+#
+# x_data = np.array(Data[brainRegion])
+# y_label = np.array(Data['disorder'])
 Data = pd.read_csv("/Volumes/QC/INT/INT_BN246_HC135BP_allMDD/Results/INTvalue_HCMDD.csv")
 
-brainRegion = Data.columns.tolist()
-del brainRegion[:2]
+region = pd.read_csv("/Volumes/QC/INT/INT_BN246_HC135BP_allMDD/Results/signifRegion.csv")
+regions = region.columns.tolist()
+MDDData = Data[Data['disorder'] == 1].sample(n=222)
+HCData = Data[Data['disorder'] == 0]
 
-x_data = np.array(Data[brainRegion])
+Data = pd.concat([HCData, MDDData])
+
+x_data = np.array(Data[regions])
+
 y_label = np.array(Data['disorder'])
 
 acc_res = []
 kappa_res = []
-kf = KFold(n_splits=5, shuffle=True)
+kf = KFold(n_splits=5,shuffle=True,random_state=6)
 for train_index, test_index in kf.split(x_data):
     # split data
     X_train, X_test = x_data[train_index, :], x_data[test_index, :]
     y_train, y_test = y_label[train_index], y_label[test_index]
 
     # Model
-    Hyper_param = {'max_depth': range(3, 6, 10)}
+    Hyper_param = {'max_depth': range(3,5,10),
+                   'learning_rate': [0.01, 0.05, 0.08, 0.1, 0.12],
+                   }
 
     predict_model = GridSearchCV(estimator=xgb.XGBClassifier(booster='gbtree',
-                                                            learning_rate=0.1,
                                                             n_estimators=100,
                                                             verbosity=0,
-                                                            objective='multi:softmax',
-                                                             num_class=2),
+                                                            objective="binary:logistic",
+                                                            ),
                                  param_grid=Hyper_param,
                                  scoring='accuracy',
                                  verbose=6,
@@ -41,9 +54,10 @@ for train_index, test_index in kf.split(x_data):
     #print('-y_test-', y_test)
 
     acc = accuracy_score(y_test, Predict_Score)
-    print('-acc:', acc)
-    acc_res.append(acc)
+    print('-acc = %.2f:' %(acc))
+    acc_res.append(float("%.2f"%(acc)))
+
     kappa = cohen_kappa_score(np.array(y_test).reshape(-1, 1), np.array(Predict_Score).reshape(-1, 1))
-    print('-kappa:', kappa)
+    print('-kappa = %.2f:' % (kappa))
     kappa_res.append(kappa)
 print('Result: acc=%.3f, kappa=%.3f ' % (np.mean(acc_res), np.mean(kappa_res)))

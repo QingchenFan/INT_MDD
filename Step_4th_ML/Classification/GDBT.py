@@ -5,16 +5,29 @@ import pandas as pd
 from sklearn.metrics import r2_score, make_scorer, accuracy_score, cohen_kappa_score
 
 
+# Data = pd.read_csv("/Volumes/QC/INT/INT_BN246_HC135BP_allMDD/Results/INTvalue_HCMDD.csv")
+#
+
+#
+# x_data = np.array(Data[brainRegion])
+# y_label = np.array(Data['disorder'])
 Data = pd.read_csv("/Volumes/QC/INT/INT_BN246_HC135BP_allMDD/Results/INTvalue_HCMDD.csv")
+
+region = pd.read_csv("/Volumes/QC/INT/INT_BN246_HC135BP_allMDD/Results/signifRegion.csv")
+regions = region.columns.tolist()
 
 brainRegion = Data.columns.tolist()
 del brainRegion[:2]
+MDDData = Data[Data['disorder'] == 1].sample(n=222)
+HCData = Data[Data['disorder'] == 0]
+
+Data = pd.concat([HCData, MDDData])
 
 x_data = np.array(Data[brainRegion])
+
 y_label = np.array(Data['disorder'])
 
-
-kf = KFold(n_splits=5, shuffle=True)
+kf = KFold(n_splits=5, shuffle=True,random_state=6)
 
 acc_res = []
 kappa_res = []
@@ -32,7 +45,7 @@ for train_index, test_index in kf.split(x_data):
     # 网格交叉验证
     cv_times = 5  # inner
     param_grid = {
-        'learning_rate': [1.0, 0.1],
+        'learning_rate': [1.0, 0.6, 0.1],
     }
     predict_model = GridSearchCV(clf, param_grid, scoring='accuracy', verbose=6, cv=cv_times)
 
@@ -57,9 +70,9 @@ for train_index, test_index in kf.split(x_data):
 
     acc = accuracy_score(y_test, Predict_Score)
     print('-acc-', acc)
-    acc_res.append(acc)
+    acc_res.append(float("%.2f" % (acc)))
     kappa = cohen_kappa_score(np.array(y_test).reshape(-1, 1), np.array(Predict_Score).reshape(-1, 1))
-    print('-kappa-', kappa)
+    print('-kappa = %.2f:' % (kappa))
     kappa_res.append(kappa)
 
 print('Result: acc=%.3f, kappa=%.3f ' % (np.mean(acc_res), np.mean(kappa_res)))

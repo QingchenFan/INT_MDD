@@ -5,4 +5,11 @@
     <orderEntry type="jdk" jdkName="$USER_HOME$/anaconda3" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PyNamespacePackagesService">
+    <option name="namespacePackageFolders">
+      <list>
+        <option value="$MODULE_DIR$/Step_4th_ML" />
+      </list>
+    </option>
+  </component>
 </module>
