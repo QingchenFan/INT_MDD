@@ -27,7 +27,7 @@ x_data = np.array(Data[brainRegion])
 
 y_label = np.array(Data['disorder'])
 
-kf = KFold(n_splits=5, shuffle=True,random_state=6)
+kf = KFold(n_splits=5, shuffle=True, random_state=6)
 
 acc_res = []
 kappa_res = []

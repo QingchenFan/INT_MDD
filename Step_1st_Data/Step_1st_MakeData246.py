@@ -72,18 +72,18 @@ def subc_timeseries(data,atlaspath):
     subctimeseries = np.array(roilist)
     print('subctimeseries.shape-', subctimeseries.shape)
     subcFC = np.corrcoef(subctimeseries)
-    return subcFC,subctimeseries
+    return subcFC, subctimeseries
 
 
-def calculate_FC(dpath,tpath,atlaspath,regions):
+def calculate_FC(dpath, tpath, atlaspath, regions):
     datapath = dpath
     cifti, cifti_data, cifti_hdr, axes = loadData(datapath)
     axes = [cifti_hdr.get_axis(i) for i in range(cifti.ndim)]
 
     Subcortical_Data = volume_from_cifti(cifti_data, axes[1])
-    Subcortical_Data =  Subcortical_Data.get_fdata()
+    Subcortical_Data = Subcortical_Data.get_fdata()
 
-    _ , subctimeseries = subc_timeseries(Subcortical_Data,atlaspath)
+    _, subctimeseries = subc_timeseries(Subcortical_Data, atlaspath)
     # savemat('./subcFC.mat', {'data': subcFC})
     # savemat('./subctimeseries.mat', {'data': subctimeseries})
 
@@ -98,16 +98,16 @@ def calculate_FC(dpath,tpath,atlaspath,regions):
     if label.shape[1] == 59412:
         cortex_data = nib.load(datapath).get_fdata()[:, 0:59412].T
     roilist = []
-    for i in range(1,regions + 1):
+    for i in range(1, regions + 1):
         index = np.where(label == i)
-        roi = cortex_data[index[1],: ]
+        roi = cortex_data[index[1], :]
         roilist.append(np.mean(roi, axis=0))
 
     roiMatrix = np.array(roilist)
     vertexsubc = np.vstack((roiMatrix, subctimeseries))
     resFC = np.corrcoef(vertexsubc)
-    print('FC shape : ',resFC.shape)
-    return resFC,vertexsubc
+    print('FC shape : ', resFC.shape)
+    return resFC, vertexsubc
 
 datapath = '/Volumes/QCI/NormativeModel/BrainProject/MDDdtseriesnii/*/*ap*'
 tpath = '/Users/qingchen/Documents/Step_1st_Data/template/BrainnetomeAtlas/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.BN_Atlas.32k_fs_LR.dlabel.nii'
@@ -118,10 +118,10 @@ for i in data:
     subID = i.split('/')[-1][0:13]
     subID = i.split('/')[-2]
     print(subID)
-    resFC, vertexsubc = calculate_FC(i,tpath,atlaspath,210)
+    resFC, vertexsubc = calculate_FC(i, tpath, atlaspath, 210)
     vertexsubc = vertexsubc.T
     newpath = "/Volumes/QCI/NormativeModel/BrainProject/BPMDD_246timeseries/" + subID
     if not os.path.exists(newpath):
         os.makedirs(newpath)
-    newdatap = newpath + '/' + subID  + '.txt'
+    newdatap = newpath + '/' + subID + '.txt'
     np.savetxt(newdatap, vertexsubc)

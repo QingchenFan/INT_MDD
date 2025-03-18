@@ -19,15 +19,15 @@ for i in databox:
     for j in range(90):
         start_index = j * 1000
         end_index = (j + 1) * 1000
-        print(j,'|','start:',start_index,'--end:',end_index)
+        print(j, '|', 'start:', start_index, '--end:', end_index)
 
         extracted_matrix = data[:, start_index:end_index]
-        print('extracted_matrix-',extracted_matrix.shape)
+        print('extracted_matrix-', extracted_matrix.shape)
 
         newdatap = newpath + '/' + subID +'_'+ str(j) +'.txt'
         #np.savetxt(newdatap, extracted_matrix)
-    lastmatrix = data[:,90000:]
-    print('lastmatrix.shape',lastmatrix.shape)
+    lastmatrix = data[:, 90000:]
+    print('lastmatrix.shape', lastmatrix.shape)
     lp = newpath + '/' + subID +'_90' +'.txt'
     #np.savetxt(lp, lastmatrix)
 

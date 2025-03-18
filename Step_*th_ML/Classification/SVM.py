@@ -25,7 +25,7 @@ x_data = np.array(Data[regions])
 
 y_label = np.array(Data['disorder'])
 
-kf = KFold(n_splits=10,shuffle=True)
+kf = KFold(n_splits=10,shuffle=True,random_state=42)
 acc_res = []
 kappa_res = []
 for train_index, test_index in kf.split(x_data):
