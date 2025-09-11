@@ -13,19 +13,16 @@ template = nib.load(template)
 label=template.get_fdata()
 label[label > 210] -= 210
 print(label.shape)
-print(label)
 
-data = sio.loadmat("/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/Gradient_MDDgroup/BP_MDD_GroupGradient.mat")['data']
-data = data[:, 0]  # 0:第一梯度 1：第二梯度
+data = sio.loadmat("/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/volume/INT_MDDGroup/Group.mat")['hwhm']
 
-for i in range(1, 211):
+for i in range(1, data.shape[1]+1):
     index = np.where(label == i)
-    label[:, index] = data[i-1]
+    label[:, index] = data[:, i-1]
 
 
-
-scalar_axis = nib.cifti2.cifti2_axes.ScalarAxis(['data'])
+scalar_axis = nib.cifti2.cifti2_axes.ScalarAxis(['INTvalue'])
 brain_model_axis = template.header.get_axis(1)
 scalar_header = nib.cifti2.Cifti2Header.from_axes((scalar_axis, brain_model_axis))
 scalar_img = nib.Cifti2Image(label, header=scalar_header)
-scalar_img.to_filename('./MDDBP_Gradient1.dscalar.nii')
+scalar_img.to_filename('/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/volume/INT_BP135DataMDD.dscalar.nii')

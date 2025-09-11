@@ -5,8 +5,8 @@ import scipy.io as sio
 from scipy.stats import ttest_ind
 import statsmodels.stats.multitest as smm
 
-HCData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/Results/INTvalue_HC.csv')
-MDDData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/Results/INTvalue_MDD.csv')
+HCData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/volume/INTvalue_HC.csv')
+MDDData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/volume/INTvalue_MDD.csv')
 
 brainRegion = HCData.columns.tolist()
 del brainRegion[:1]
@@ -42,7 +42,7 @@ result_df = pd.DataFrame({
 })
 
 # 将结果保存到CSV文件中，可根据实际需求修改文件路径及文件名
-result_df.to_csv('./Ttest_Region.csv', index=False)
+result_df.to_csv('/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/volume/Ttest_Region.csv', index=False)
 
 
 
@@ -56,8 +56,10 @@ label[label > 210] -= 210
 data = pvalue
 data = fdr_pvalue
 
+
 data = np.where(data > 0.05, np.nan, data)
 print(data)
+# 因为Ttest_Region.csv 脑区顺序和给的模板顺序一致，可以这样来执行
 for i in range(1, data.shape[0]+1):
     index = np.where(label == i)
     label[:, index] = data[i-1]
@@ -68,4 +70,4 @@ scalar_axis = nib.cifti2.cifti2_axes.ScalarAxis(['IntValue'])
 brain_model_axis = template.header.get_axis(1)
 scalar_header = nib.cifti2.Cifti2Header.from_axes((scalar_axis, brain_model_axis))
 scalar_img = nib.Cifti2Image(label, header=scalar_header)
-scalar_img.to_filename('./Ttestfdrp_HCBP135_BP135MDD.dscalar.nii')
+scalar_img.to_filename('/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/volume/Ttestfdrp_HCBP135_BP135MDD.dscalar.nii')

@@ -5,7 +5,6 @@ import nibabel as nib
 from nilearn.maskers import NiftiMasker
 from scipy.io import savemat
 from nilearn import plotting
-
 def volume_from_cifti(data, axis):
     assert isinstance(axis, nib.cifti2.BrainModelAxis)
     data = data.T[axis.volume_mask]                          # Assume brainmodels axis is last, move it to front
@@ -32,20 +31,9 @@ def loadData(datapath):
     cifti_data = cifti.get_fdata()
     cifti_hdr = cifti.header
     axes = [cifti_hdr.get_axis(i) for i in range(cifti.ndim)]
-    return cifti, cifti_data, cifti_hdr, axes
+    return cifti,cifti_data, cifti_hdr, axes
 
-def plot_correlation_matrix(correlation_matrix,labels):
-    plotting.plot_matrix(
-        correlation_matrix,
-        figure=(10, 8),
-        labels=labels,
-        vmax=0.8,
-        vmin=-0.8,
-        #title="Confounds",
-        reorder=True,
-    )
-    plotting.show()
-def subc_timeseries(data,atlaspath):
+def subc_timeseries(data, atlaspath):
     data = data.transpose(3, 0, 1, 2)
     atlasData = nib.load(atlaspath).get_fdata()
 
@@ -74,29 +62,23 @@ def subc_timeseries(data,atlaspath):
     subcFC = np.corrcoef(subctimeseries)
     return subcFC, subctimeseries
 
+def calculate_FC(datapath, tpath, regions, atlaspath):
+    #datapath = '/Users/qingchen/Documents/code/Data/FC/sub-06202_task-rest_space-fsLR_den-91k_desc-denoisedSmoothed_bold.dtseries.nii'
 
-def calculate_FC(dpath, tpath, atlaspath, regions):
-    datapath = dpath
     cifti, cifti_data, cifti_hdr, axes = loadData(datapath)
     axes = [cifti_hdr.get_axis(i) for i in range(cifti.ndim)]
-    print("source data shape :", cifti_data.shape)
 
     Subcortical_Data = volume_from_cifti(cifti_data, axes[1])
     Subcortical_Data = Subcortical_Data.get_fdata()
     _, subctimeseries = subc_timeseries(Subcortical_Data, atlaspath)
-    # savemat('./subcFC.mat', {'data': subcFC})
-    # savemat('./subctimeseries.mat', {'data': subctimeseries})
 
     a_left = surf_data_from_cifti(cifti_data, axes[1], 'CIFTI_STRUCTURE_CORTEX_LEFT')
     a_right = surf_data_from_cifti(cifti_data, axes[1], 'CIFTI_STRUCTURE_CORTEX_RIGHT')
     cortex_data = np.concatenate((a_left, a_right), axis=0)
-    #print('cortex_data',cortex_data.shape)
+    print('cortex_data', cortex_data.shape)
     template = tpath
     label = nib.load(template).get_fdata()
-    label[label > 210] -= 210
-
-    if label.shape[1] == 59412:
-        cortex_data = nib.load(datapath).get_fdata()[:, 0:59412].T
+    print('Label:', label.shape)
     roilist = []
     for i in range(1, regions + 1):
         index = np.where(label == i)
@@ -104,32 +86,35 @@ def calculate_FC(dpath, tpath, atlaspath, regions):
         roilist.append(np.mean(roi, axis=0))
 
     roiMatrix = np.array(roilist)
-    vertexsubc = np.vstack((roiMatrix, subctimeseries))
-    resFC = np.corrcoef(vertexsubc)
-    print('FC shape : ', resFC.shape)
-    return resFC, vertexsubc
+    timeseries = np.vstack((roiMatrix, subctimeseries))
 
-datapath = '/Volumes/QC/Data/BrainProject_surface_globalsingnal/BP_PD_surface/*/*dtseries.nii'
-tpath = '/Users/qingchen/Documents/Data/template/BrainnetomeAtlas/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.BN_Atlas.32k_fs_LR.dlabel.nii'
+    return timeseries
+
+
+# --- Test---未完成的代码
+datapath = '/Volumes/QCI/NormativeModel/Data135/MDD/dtseriesnii/*.dtseries.nii'
+box = glob.glob(datapath)
+
+template = '/Users/qingchen/Documents/Data/template/CBIG-master/stable_projects/brain_parcellation/Schaefer2018_LocalGlobal/Parcellations/HCP/fslr32k/cifti/Schaefer2018_400Parcels_7Networks_order.dlabel.nii'
 atlaspath = '/Users/qingchen/Documents/Data/template/BrainnetomeAtlas/BN_Atlas_246_2mm.nii.gz'
-data = glob.glob(datapath)
 
-for i in data:
-    subID = i.split('/')[-1][0:13]
-    subID = i.split('/')[-2]
+for i in box:
+    # subID = i.split('/')[-2]
+    # print(subID)
+    subID = i.split('/')[-1][0:10]
     print(subID)
 
-    resFC, vertexsubc = calculate_FC(i, tpath, atlaspath, 210)
-    vertexsubc = vertexsubc.T
-    print('vertexsubc', vertexsubc.shape)
-
-    newpath = "/Volumes/QC/Data/BN246timeseries_surface/MDD_globalsignals/" + subID
+    timeseries = calculate_FC(i, template, 400, atlaspath)
+    timeseries = timeseries.T
+    print(timeseries.shape)
+    newpath = "/Volumes/QC/Data/Schaefer400_BN36/Data135_MDD/" + subID
     if not os.path.exists(newpath):
         os.makedirs(newpath)
     newdatap = newpath + '/' + subID + '.txt'
 
 
-    np.savetxt(newdatap, vertexsubc)
+    np.savetxt(newdatap, timeseries)
+
 
 
 

@@ -3,10 +3,14 @@ import numpy as np
 import scipy.io as scio
 from brainspace.gradient import GradientMaps
 from scipy.io import savemat
-
-
-path = '/Volumes/QC/Data/BN246_FC/HC_BP135/sub-*.mat'
-#path = '/Volumes/QC/Data/BN246_FC/MDD_BP35/sub-*.mat'
+from brainspace.datasets import load_parcellation, load_conte69
+from brainspace.gradient import GradientMaps
+from brainspace.plotting import plot_hemispheres
+'''
+计算数据格式为 mat的梯度
+'''
+#path = '/Volumes/QC/Data/BN246_FC/HC_BP135/sub-*.mat'
+path = '/Volumes/QC/Data/BN246_FC/MDD_BP135/sub-0*.mat'
 dataList = glob.glob(path)
 
 databox = []
@@ -20,18 +24,28 @@ for i in dataList:
 
 mfizFC = box / len(dataList)
 mFC = np.tanh(mfizFC)
-
 gp = GradientMaps(kernel='normalized_angle', approach='dm', alignment='procrustes', n_components=10,
                   random_state=0)
 # TODO: 计算MDD组梯度时，可向HC组梯度对齐
-# ref = scio.loadmat('/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/Gradient_HCgroup/BP135_HC_GroupGradient.mat')
-# gp.fit(mFC, reference=ref['data'])
-
-gp.fit(mFC)
+ref = scio.loadmat('/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/Gradient_HCgroup/BP135_HC_GroupGradient.mat')
+gp.fit(mFC, reference=ref['data'])
+# TODO: 计算HC梯度
+#gp.fit(mFC)
 
 res = gp.gradients_
 
-savemat('/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/Gradient_MDDgroup/BP135_HC_GroupGradient2.mat', {'data': res})
+savemat('/Volumes/QC/INT/INT_BN246_HC135BP_BP135MDD/Gradient_MDDgroup/BP_MDD_GroupGradient.mat', {'data': res})
+
+import matplotlib.pyplot as plt
+
+expl_var = gp.lambdas_ / sum(gp.lambdas_)
+
+plt.figure(figsize=(5, 4))
+plt.scatter(range(expl_var.size), expl_var * 100, alpha=0.7, color='#00063F')
+plt.xlabel('Gradient', fontsize=14, fontname='Avenir')
+plt.ylabel('Explained variance (%)', fontsize=14, fontname='Avenir')
+plt.xticks(np.arange(len(expl_var)), np.arange(1, len(expl_var) + 1))  # axis ticks start at 1 not 0
+plt.savefig('./MDDBP.png', dpi=300)
 
 # # Plot brain gradient
 # labeling = load_parcellation('schaefer', scale=400, join=True)

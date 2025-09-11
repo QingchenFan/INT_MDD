@@ -8,7 +8,7 @@
   <component name="PyNamespacePackagesService">
     <option name="namespacePackageFolders">
       <list>
-        <option value="$MODULE_DIR$/Step_4th_ML" />
+        <option value="$MODULE_DIR$/Step_*th_ML" />
       </list>
     </option>
   </component>
