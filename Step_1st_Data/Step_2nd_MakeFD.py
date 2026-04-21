@@ -1,22 +1,28 @@
 import glob
+import os.path
 
-import numpy as np
+import pandas as pd
+#path = '/Volumes/QCII/BrainProject/xcpd_out_PD/xcp_d/sub-*/func/*task-rest_acq-ap_run-1_outliers.tsv'
+path = '/Volumes/QC/Data/INT/BN246timeseries_surface/MDD/sub-*V01'
+fl = glob.glob(path)
 
-
-path = '/Volumes/QC/Data/BN246timeseries_surface/HC/HCP/*/*.txt'
-databox = glob.glob(path)
-
-for i in databox:
-    print(i)
-    subID = i.split('/')[-2]
+subbox = []
+for i in fl:
+    subID = i.split('/')[-1]
     print(subID)
 
-    a = np.loadtxt(i).shape[0]
+    confound = '/Volumes/ZLabData/BrainProject/brainproject_I/fmriprep_out_PD/'+subID+'/func/'+subID+'_task-rest_acq-ap_run-1_desc-confounds_timeseries.tsv'
+    if not os.path.isfile(confound):
+        continue
+    conf = pd.read_csv(confound, sep='\t')
+    fd = conf['framewise_displacement'][:]
 
-    res = np.full((a, 1), 0.1)
+    fd.iloc[0] = 0
+    save_path = f'/Volumes/QC/Data/INT/BN246timeseries_surface/MDD/{subID}/{subID}_FD.txt'
+    fd.to_csv(save_path, index=False, header=False)
 
-    #outp = '/Volumes/QCI/NormativeModel/DuiLie/MDD/DLMDDData/'+subID+'/'+subID+'_FD.txt'
-    outp = '/Volumes/QC/Data/BN246timeseries_surface/HC/HCP/'+subID+'/'+subID+'_FD.txt'
-    np.savetxt(outp, res, fmt='%.1f', delimiter=',')
+
+
+
 
 

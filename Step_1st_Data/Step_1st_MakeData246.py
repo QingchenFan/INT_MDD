@@ -109,15 +109,16 @@ def calculate_FC(dpath, tpath, atlaspath, regions):
     print('FC shape : ', resFC.shape)
     return resFC, vertexsubc
 if __name__ == '__main__':
-    datapath = '/Volumes/QCCC/HCP_xcpd_out2/sub-*/func/*denoisedSmoothed_bold.dtseries.nii'
+    datapath = '/Volumes/QC/Data/INT/brianproject/HC/sub-*_task-rest_acq-ap_run-1_space-fsLR_den-91k_bold_smooth.dtseries.nii'
     tpath = '/Users/qingchen/Documents/Data/template/BrainnetomeAtlas/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.BN_Atlas.32k_fs_LR.dlabel.nii'
     atlaspath = '/Users/qingchen/Documents/Data/template/BrainnetomeAtlas/BN_Atlas_246_2mm.nii.gz'
     data = glob.glob(datapath)
 
     for i in data:
-        subID = i.split('/')[-3]
+        subID = i.split('/')[-1].split('_')[0]
         print(subID)
-        newpath = "/Volumes/QC/Data/BN246timeseries_surface/HC/HCP/" + subID
+
+        newpath = "/Volumes/QC/Data/INT/BN246timeseries_surface/HC/" + subID
         if os.path.exists(newpath):
             continue
         resFC, vertexsubc = calculate_FC(i, tpath, atlaspath, 210)

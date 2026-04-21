@@ -5,11 +5,11 @@ import scipy.io as sio
 from scipy.stats import ttest_ind
 import statsmodels.stats.multitest as smm
 
-HCData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZ/INT_HC.csv')
-MDDData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZ/INT_MDD.csv')
+HCData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_value/HC_INT20.csv')
+MDDData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_value/MDD_INT202.csv')
 
 brainRegion = HCData.columns.tolist()
-del brainRegion[:5]
+del brainRegion[:1]
 
 HCdata = np.array(HCData[brainRegion])
 MDDdata = np.array(MDDData[brainRegion])
@@ -42,7 +42,7 @@ result_df = pd.DataFrame({
 })
 
 # 将结果保存到CSV文件中，可根据实际需求修改文件路径及文件名
-result_df.to_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZ/Step2_Ttest/Ttest_Region_INT2.csv', index=False)
+result_df.to_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/Ttest_Region_HCvsMDD202.csv', index=False)
 
 
 
@@ -53,24 +53,21 @@ template = nib.load(template)
 label=template.get_fdata()
 label[label > 210] -= 210
 
+data = pvalue
+data = fdr_pvalue
 
-t_value_map = np.where(fdr_pvalue < 0.05, tvalue, np.nan)
 
-# 初始化脑图数据（和模板同形状）
-brain_map = np.zeros_like(label)
+data = np.where(data > 0.05, np.nan, data)
 
-# 按ROI编号填充 t 值（只填充显著的ROI）
-for i in range(1, len(t_value_map) + 1):
-    # 找到当前ROI对应的所有顶点/体素索引
+# 因为Ttest_Region.csv 脑区顺序和给的模板顺序一致，可以这样来执行
+for i in range(1, data.shape[0]+1):
     index = np.where(label == i)
-    # 赋值：显著→t值，不显著→NaN
-    brain_map[index] = t_value_map[i - 1]
+    label[:, index] = data[i-1]
 
-# 构建CIFTI脑图文件头
-scalar_axis = nib.cifti2.cifti2_axes.ScalarAxis(['T-Value'])
+
+
+scalar_axis = nib.cifti2.cifti2_axes.ScalarAxis(['IntValue'])
 brain_model_axis = template.header.get_axis(1)
 scalar_header = nib.cifti2.Cifti2Header.from_axes((scalar_axis, brain_model_axis))
-
-# 保存最终的t值脑图
-scalar_img = nib.Cifti2Image(brain_map, header=scalar_header)
-scalar_img.to_filename('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZ/Step2_Ttest/Ttest_tvalue_fdr_HCMDD2.dscalar.nii')
+scalar_img = nib.Cifti2Image(label, header=scalar_header)
+scalar_img.to_filename('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/Ttest_Region_HCvsMDD20.dscalar.nii')
