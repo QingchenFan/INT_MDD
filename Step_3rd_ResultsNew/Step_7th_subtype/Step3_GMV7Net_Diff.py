@@ -1,22 +1,24 @@
 import pandas as pd
 import numpy as np
-from nilearn.conftest import matplotlib
 from scipy import stats
 from statsmodels.stats.multitest import fdrcorrection
 import matplotlib.pyplot as plt
 import seaborn as sns
-matplotlib.use('Agg')
+'''
+    亚型网络层级的 INT差异
+'''
 # ================== 1. 读取数据 ==================
-hc_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/HC_INT20_7net.csv')
-mdd_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/subtype2_INT_7net.csv')
+hc_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/subtype1_INT_GMV_7net.csv')
+mdd_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/subtype2_INT_GMV_7net.csv')
 
-print(f"HC 被试数: {len(hc_df)}, MDD 被试数: {len(mdd_df)}")
+print(f"s1 被试数: {len(hc_df)}, s2 被试数: {len(mdd_df)}")
 
 # 网络列名（去掉 subID）
-networks = ['subcortical', 'Visual', 'Somatomotor', 'Dorsal_Attention',
-            'Ventral_Attention', 'Limbic', 'Frontoparietal', 'Default']
-# networks = ['subcortical_GMV', 'Visual_GMV', 'Somatomotor_GMV', 'Dorsal_Attention_GMV',
-#             'Ventral_Attention_GMV', 'Limbic_GMV', 'Frontoparietal_GMV', 'Default_GMV']
+
+networks = [
+    'subcortical_GMV', 'Visual_GMV', 'Somatomotor_GMV', 'Dorsal_Attention_GMV',
+    'Ventral_Attention_GMV', 'Limbic_GMV', 'Frontoparietal_GMV', 'Default_GMV'
+]
 # ================== 2. 双样本 t 检验 + FDR 校正 ==================
 results = []
 
@@ -40,11 +42,11 @@ for net in networks:
 
     results.append({
         'Network': net,
-        'HC_mean': round(hc_mean, 4),
-        'HC_std': round(hc_std, 4),
-        'MDD_mean': round(mdd_mean, 4),
-        'MDD_std': round(mdd_std, 4),
-        'Diff (HC-MDD)': round(hc_mean - mdd_mean, 4),
+        's1_mean': round(hc_mean, 4),
+        's1_std': round(hc_std, 4),
+        's2_mean': round(mdd_mean, 4),
+        's2_std': round(mdd_std, 4),
+        'Diff (s1-s2)': round(hc_mean - mdd_mean, 4),
         't': round(t_stat, 3),
         'p_raw': p_val,
         'Cohen_d': round(cohen_d, 3)
@@ -66,7 +68,7 @@ print("\n=== HC vs MDD 网络层面 t 检验结果 (FDR校正) ===")
 print(result_df.round(4))
 
 # 保存表格
-result_df.to_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_aINT7Net_Diff/Ttest_s2_HC_INT7net.csv', index=False)
+result_df.to_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_bGMV7Net_Diff/Ttest_GMV7net.csv', index=False)
 
 
 # ================== 3. 绘制一张画布上的 8 个网络箱线图 ==================
@@ -75,22 +77,22 @@ plt.figure(figsize=(16, 10))
 # 准备长格式数据用于 seaborn
 plot_data = []
 for net in networks:
-    for val, group in zip(hc_df[net], ['HC'] * len(hc_df)):
-        plot_data.append({'Network': net, 'Group': 'HC', 'INT': val})
-    for val, group in zip(mdd_df[net], ['MDD'] * len(mdd_df)):
-        plot_data.append({'Network': net, 'Group': 'MDD', 'INT': val})
+    for val, group in zip(hc_df[net], ['subtype1'] * len(hc_df)):
+        plot_data.append({'Network': net, 'Group': 'subtype1', 'INT': val})
+    for val, group in zip(mdd_df[net], ['subtype2'] * len(mdd_df)):
+        plot_data.append({'Network': net, 'Group': 'subtype2', 'INT': val})
 
 plot_df = pd.DataFrame(plot_data)
 
 # 绘图
 ax = sns.boxplot(x='Network', y='INT', hue='Group', data=plot_df,
-                 palette={'HC': '#1f77b4', 'MDD': '#d62728'},
+                 palette={'subtype1': '#1f77b4', 'subtype2': '#d62728'},
                  width=0.6, fliersize=3)
 
 # 添加散点
 sns.stripplot(x='Network', y='INT', hue='Group', data=plot_df,
               dodge=True, alpha=0.6, jitter=True, size=4,
-              palette={'HC': '#1f77b4', 'MDD': '#d62728'})
+              palette={'subtype1': '#1f77b4', 'subtype2': '#d62728'})
 
 # 添加显著性标记
 for i, net in enumerate(networks):
@@ -108,9 +110,9 @@ for i, net in enumerate(networks):
     y_max = plot_df[plot_df['Network'] == net]['INT'].max() * 1.05
     plt.text(i, y_max, sig, ha='center', va='bottom', fontsize=14, fontweight='bold')
 
-plt.title('INT Values Comparison between HC and MDD across 8 Yeo Networks', fontsize=16, pad=20)
+#plt.title('INT Values Comparison between HC and MDD across 8 Yeo Networks', fontsize=16, pad=20)
 plt.xlabel('Yeo 7 Networks + Subcortical', fontsize=14)
-plt.ylabel('Integrated Network Threshold (INT)', fontsize=14)
+plt.ylabel('GMV', fontsize=14)
 plt.xticks(rotation=45, ha='right')
 plt.legend(title='Group', fontsize=12)
 
@@ -119,6 +121,6 @@ plt.grid(axis='y', alpha=0.3)
 sns.despine()
 
 plt.tight_layout()
-plt.savefig('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_aINT7Net_Diff/Ttest_s2_HC_INT7net.png', dpi=300, bbox_inches='tight')
-plt.show()
+plt.savefig('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_bGMV7Net_Diff/Ttest_GMV7net2.png', dpi=300, bbox_inches='tight')
+#plt.show()
 

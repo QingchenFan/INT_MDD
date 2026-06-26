@@ -10,7 +10,35 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/Step_3rd_ResultsNew/MDD_INT.csv">
+        <entry key="/Step_1st_Data/DZ_MDD_subjects_mean_fd.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Step_1st_Data/excluded_subjectsBPII.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Step_1st_Data/excluded_subjectsDL.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Step_1st_Data/excluded_subjectsDZ.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Step_1st_Data/excluded_subjectsHCP.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

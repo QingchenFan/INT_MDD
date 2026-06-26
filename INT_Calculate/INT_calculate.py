@@ -23,7 +23,7 @@ def intrinic_timescale_interp(intter):
         # 方案1（推荐）：直接累加所有 lag（从1开始）
         return np.sum(intter[1:])
 
-datapath = "/Volumes/QC/Data/BN246timeseries_surface/MDD/BP_135/sub-*/*.txt"
+datapath = "/Volumes/QC/Data/BN246timeseries_surface/MDD/DZ/sub-*/*.txt"
 data = glob.glob(datapath)
 results = []
 nlags = 20
@@ -55,4 +55,4 @@ for i in data:
 
 # 构建DataFrame并保存
 df = pd.DataFrame(results)
-df.to_csv("./MDD_INT202.csv", index=False, encoding="utf-8")
+df.to_csv("./MDD_DZ_INT.csv", index=False, encoding="utf-8")

@@ -1,14 +1,13 @@
 import pandas as pd
 import numpy as np
-from nilearn.conftest import matplotlib
 from scipy import stats
 from statsmodels.stats.multitest import fdrcorrection
 import matplotlib.pyplot as plt
 import seaborn as sns
-matplotlib.use('Agg')
+
 # ================== 1. 读取数据 ==================
-hc_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/HC_INT20_7net.csv')
-mdd_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/subtype2_INT_7net.csv')
+hc_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step3_Structure/HC_GMV_7Net_agesex.csv')
+mdd_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step3_Structure/MDD_GMV_7Net_agesex.csv')
 
 print(f"HC 被试数: {len(hc_df)}, MDD 被试数: {len(mdd_df)}")
 
@@ -66,7 +65,7 @@ print("\n=== HC vs MDD 网络层面 t 检验结果 (FDR校正) ===")
 print(result_df.round(4))
 
 # 保存表格
-result_df.to_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_aINT7Net_Diff/Ttest_s2_HC_INT7net.csv', index=False)
+result_df.to_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step3_Structure/Ttest_MDDHC_GMV7net.csv', index=False)
 
 
 # ================== 3. 绘制一张画布上的 8 个网络箱线图 ==================
@@ -119,6 +118,6 @@ plt.grid(axis='y', alpha=0.3)
 sns.despine()
 
 plt.tight_layout()
-plt.savefig('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_aINT7Net_Diff/Ttest_s2_HC_INT7net.png', dpi=300, bbox_inches='tight')
-plt.show()
+plt.savefig('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step3_Structure/Ttest_MDDHC_GMV7net.png', dpi=300, bbox_inches='tight')
+#plt.show()
 

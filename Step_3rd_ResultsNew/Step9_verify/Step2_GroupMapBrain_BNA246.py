@@ -18,7 +18,7 @@ Regions_data = pd.read_csv(Regionscsv_path)
 region = Regions_data['regions'][0:210]
 
 # 加载 CSV 文件 TODO: subtype1 subtype2
-csv_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_value/MDD_246INT_mean.csv'
+csv_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/subtype1_BN246_INT_mean.csv'
 
 weight_data = pd.read_csv(csv_path)
 
@@ -45,5 +45,5 @@ brain_model_axis = template.header.get_axis(1)
 scalar_header = nib.cifti2.Cifti2Header.from_axes((scalar_axis, brain_model_axis))
 scalar_img = nib.Cifti2Image(mapped_data, header=scalar_header)
 
-scalar_img.to_filename('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step1_GroupMapBrain_BNA246/MDD_Regionmean.dscalar.nii')
+scalar_img.to_filename('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/subtype1_Regionmean.dscalar.nii')
 

@@ -1,0 +1,2 @@
+Gene_set,Term,P-value,Adjusted P-value,Old P-value,Old adjusted P-value,Odds Ratio,Combined Score,Genes
+GO_Biological_Process_2023,Intracellular Protein Transmembrane Transport (GO:0065002),6.005287332760356e-06,0.012803272593445079,0,0,8.868743785217102,106.62775585146754,HSPA5;ZFAND2B;PEX5;SRP54;PEX2;TIMM44;HYOU1;TOMM20;PEX14
