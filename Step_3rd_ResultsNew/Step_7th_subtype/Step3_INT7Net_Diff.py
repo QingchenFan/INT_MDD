@@ -15,6 +15,7 @@ matplotlib.use('Agg')
 hc_path = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_aINT7Net_Diff/subtype1_INT_7net_agesex_FD.csv"
 mdd_path = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_aINT7Net_Diff/subtype2_INT_7net_agesex_FD.csv"
 
+
 hc = pd.read_csv(hc_path)
 mdd = pd.read_csv(mdd_path)
 
@@ -62,9 +63,9 @@ print(res)
 
 # Save GLM table
 # 【修改点3】：保存表格文件名加上了 FD 标识
-out_table = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_aINT7Net_Diff/S1_S2_INT8net_GLMagesexFD.csv"
-res.to_csv(out_table, index=False)
-print(f"\nSaved GLM results table to: {out_table}")
+#out_table = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_aINT7Net_Diff/S1_S2_INT8net_GLMagesexFD.csv"
+# res.to_csv(out_table, index=False)
+# print(f"\nSaved GLM results table to: {out_table}")
 
 # =========================
 # 4) Convert to long format for plotting
@@ -169,6 +170,6 @@ plt.tight_layout()
 
 # Save figure
 # 【修改点3】：保存图像文件名加上了 FD 标识
-out_fig = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_aINT7Net_Diff/S1_S2_INT8net_GLMagesexFD.png"
+out_fig = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step3_aINT7Net_Diff/S1_S2_INT8net_GLMagesexFD123321.png"
 plt.savefig(out_fig, dpi=300, bbox_inches="tight")
 print(f"\nFigure saved to: {out_fig}")

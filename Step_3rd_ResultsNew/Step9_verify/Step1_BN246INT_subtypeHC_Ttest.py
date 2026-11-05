@@ -129,23 +129,23 @@ def run_brain_glm_analysis(subtype_data_path, hc_data_path, subtype_label, outpu
 
 # 【修改 5】：更新了输入文件的路径，指向带有 FD 的新文件
 HC_PATH = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/HC_DZ_INT_agesex_FD.csv'
-BASE_DIR = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/Step1_subtypeHC_Ttest'
+BASE_DIR = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/INT_covariate/Step1_subtypeHC_Ttest'
 
-SUBTYPE1_PATH = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/subtype1_DZ_INT_FD.csv'
-SUBTYPE2_PATH = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/subtype2_DZ_INT_FD.csv'
+SUBTYPE1_PATH = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/INT_covariate/subtype1_DZ_INT246.csv'
+SUBTYPE2_PATH = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/INT_covariate/subtype2_DZ_INT246.csv'
 
 # ------ 跑 Subtype1 现有的比较 ------
-# run_brain_glm_analysis(
-#     subtype_data_path=SUBTYPE1_PATH,
-#     hc_data_path=HC_PATH,
-#     subtype_label='Subtype1',
-#     output_dir=BASE_DIR
-# )
-
-# ------ 跑 Subtype2 现有的比较 ------
 run_brain_glm_analysis(
-    subtype_data_path=SUBTYPE2_PATH,
+    subtype_data_path=SUBTYPE1_PATH,
     hc_data_path=HC_PATH,
-    subtype_label='Subtype2',
+    subtype_label='Subtype1',
     output_dir=BASE_DIR
 )
+
+# ------ 跑 Subtype2 现有的比较 ------
+# run_brain_glm_analysis(
+#     subtype_data_path=SUBTYPE2_PATH,
+#     hc_data_path=HC_PATH,
+#     subtype_label='Subtype2',
+#     output_dir=BASE_DIR
+# )

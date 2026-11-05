@@ -7,27 +7,27 @@ import seaborn as sns
 import os
 
 # ----------------- 0. 基础路径和名称设置 -----------------
-base_dir = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/'
-out_dir = os.path.join(base_dir, 'Step1_NetworkHierarchy')
+base_dir = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_covariate/Step2_subtype'
+out_dir = os.path.join(base_dir, 'Step5_DiffNetwork')
 if not os.path.exists(out_dir):
     os.makedirs(out_dir)  # 如果输出文件夹不存在则创建
 
-file1 = os.path.join(base_dir, 'subtype1_INT_7net_agesex_FD.csv')
-file2 = os.path.join(base_dir, 'subtype2_INT_7net_agesex_FD.csv')
+file1 = os.path.join(base_dir, 'subtype1_INT20_7net_agesex.csv')
+file2 = os.path.join(base_dir, 'subtype2_INT20_7net_agesex.csv')
 
 ordered_networks = [
     'Default', 'Frontoparietal', 'Limbic', 'Ventral_Attention',
     'Dorsal_Attention', 'Somatomotor', 'Visual', 'subcortical'
 ]
 
-# ----------------- 1. 读取数据并计算 3D 差异矩阵 -----------------
+# ----------------- 1. 读取数据并计算 差异矩阵 -----------------
 df1 = pd.read_csv(file1)
 df2 = pd.read_csv(file2)
 
 data1 = df1[ordered_networks].values
 data2 = df2[ordered_networks].values
 
-# 计算 3D 差异矩阵
+# 计算  差异矩阵
 diff_1 = data1[:, :, np.newaxis] - data1[:, np.newaxis, :]
 diff_2 = data2[:, :, np.newaxis] - data2[:, np.newaxis, :]
 
@@ -126,11 +126,14 @@ plt.figure(figsize=(10, 8))
 ax = sns.heatmap(t_map_df, cmap='coolwarm', center=0,
                  annot=annot_matrix, fmt='',
                  square=True, linewidths=.5,
-                 cbar_kws={"label": "T-value (Subtype1 vs Subtype2)"})
+                 #cbar_kws={"label": "T-value (Subtype1 vs Subtype2)"}
+                 )
 
-plt.title('T-map of Network Differences\n(Controlling for Age, Sex, meanFD; * FDR $p<0.05$)')
+#plt.title('T-map of Network Differences\n(Controlling for Age, Sex, meanFD; * FDR $p<0.05$)')
 plt.xticks(rotation=45, ha='right')
 plt.yticks(rotation=0)
+
+ax.tick_params(length=0)
 plt.tight_layout()
 
 # 保存热图

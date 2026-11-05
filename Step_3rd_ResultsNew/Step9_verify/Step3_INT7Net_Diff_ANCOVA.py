@@ -12,8 +12,8 @@ import seaborn as sns
 # ⚠️ 注意：请确保这三个原始 csv 文件中都包含了 'mean_fd' 这一列。
 # 如果不包含，请先将 mean_fd 合并到这三个输入文件中。
 path_hc = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/HC_DZ_INT_8net.csv'
-path_s1 = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/subtype1_DZ_INT_8net.csv'
-path_s2 = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/subtype2_DZ_INT_8net.csv'
+path_s1 = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/INT_covariate/subtype1_DZ_INT_8Net.csv'
+path_s2 = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/INT_covariate/subtype2_DZ_INT_8Net.csv'
 
 df_hc = pd.read_csv(path_hc)
 df_s1 = pd.read_csv(path_s1)
@@ -81,7 +81,7 @@ results_df['p_FDR'] = p_fdr_main
 
 # 【修改点3】：保存主效应结果（更改文件名避免覆盖）
 results_df.to_csv(
-    '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/Step2_8Net_INT_mean_Diff/ANCOVA_8networks_INT_MainEffect_covFD.csv',
+    '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/INT_covariate/Step2_8Net_INT_mean_Diff/ANCOVA_8networks_INT_MainEffect_covFD.csv',
     index=False)
 
 # --- 事后两两比较 FDR 校正 (全局24次检验) ---
@@ -105,7 +105,7 @@ pairwise_df['Significance'] = pairwise_df['p_FDR'].apply(get_stars)
 
 # 【修改点3】：保存两两比较结果（更改文件名避免覆盖）
 pairwise_df.to_csv(
-    '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/Step2_8Net_INT_mean_Diff/ANCOVA_8networks_INT_Pairwise_covFD.csv',
+    '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/INT_covariate/Step2_8Net_INT_mean_Diff/ANCOVA_8networks_INT_Pairwise_covFD.csv',
     index=False)
 
 print("=== INT 主效应与两两比较分析完成！已控制 Age, Sex, mean_fd，进行 FDR 校正并保存至 CSV ===")
@@ -173,7 +173,7 @@ plt.legend(bbox_to_anchor=(1.01, 1), loc='upper left', borderaxespad=0.)
 plt.tight_layout()
 
 # 【修改点3】：保存带星号的高清图（更改文件名避免覆盖）
-save_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/Step2_8Net_INT_mean_Diff/ANCOVA_8networks_INT_Boxplot_Stars_covFD.png'
+save_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/INT_covariate/Step2_8Net_INT_mean_Diff/ANCOVA_8networks_INT_Boxplot_Stars_covFD.png'
 plt.savefig(save_path, dpi=300, bbox_inches='tight')
 #plt.show()
 

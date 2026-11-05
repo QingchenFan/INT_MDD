@@ -3,14 +3,21 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="/Step_1st_Data/Clinical/AllData_HAMD_final.csv">
+        <entry key="/INT_Calculate/HC_DL_INT25.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
-        <entry key="/Step_1st_Data/DZ_MDD_subjects_mean_fd.csv">
+        <entry key="/INT_Calculate/HC_INT25.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Step_1st_Data/Clinical/AllData_HAMD_final.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -39,6 +46,41 @@
           </value>
         </entry>
         <entry key="/Step_1st_Data/excluded_subjectsHCP.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Step_3rd_ResultsNew/AgeSex/MDD_agesex_balanced.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Step_3rd_ResultsNew/AgeSex/MDD_dropped_subjects.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Step_3rd_ResultsNew/Step_7th_subtype/Step_21_null/permutation_ari_results.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Step_3rd_ResultsNew/Step_7th_subtype/Step_21_null/permutation_p_values.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/Step_3rd_ResultsNew/Step_7th_subtype/Step_21_null/permutation_p_values_corrected.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

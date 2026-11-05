@@ -2,7 +2,7 @@ import pandas as pd
 
 # 1. 读取原始数据文件
 # 请根据您本地的实际路径修改文件路径，例如: '/Volumes/QC/INT/.../subtype1_INT_7net_agesex_FD.csv'
-file_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/HC_INT20_7net_agesex_FD.csv'
+file_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/subtype2_INT20_7net_agesex.csv'
 df = pd.read_csv(file_path)
 
 # 2. 定义用于计算的 8 个脑网络列名
@@ -24,8 +24,7 @@ actual_keep_cols = [col for col in keep_cols if col in df.columns]
 result_df = df[actual_keep_cols]
 
 # 5. 保存结果到新的 CSV 文件中
-output_filename = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step1_INTRange/Step2_8Net_INTRange/' \
-                  'HC_net_range.csv'
+output_filename = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/Step4_b_INTRange/subtype2_INT8Net_Range.csv'
 result_df.to_csv(output_filename, index=False)
 
 print(f"数据已成功保存至: {output_filename}")

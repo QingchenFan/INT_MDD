@@ -5,8 +5,8 @@ import statsmodels.formula.api as smf
 import statsmodels.stats.multitest as smm
 
 # 1. 加载数据（保持您的原始路径）
-Subtype1_Data = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/subtype1_INT_agesex.csv')
-Subtype2_Data = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/subtype2_INT_agesex.csv')
+Subtype1_Data = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/subtype1_INT20_agesex_FD.csv')
+Subtype2_Data = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/subtype2_INT20_agesex_FD.csv')
 
 # 2. 合并数据并添加组别标签
 Subtype1_Data['Group'] = 'Subtype1'
@@ -14,7 +14,7 @@ Subtype2_Data['Group'] = 'Subtype2'
 combined_df = pd.concat([Subtype1_Data, Subtype2_Data], ignore_index=True)
 
 # 3. 提取脑区列名（自动排除所有非脑区特征列，包括亚型2特有的 site, sitenum, MDD）
-exclude_cols = ['subID', 'age', 'sex', 'site', 'sitenum', 'MDD', 'Group']
+exclude_cols = ['subID', 'age', 'sex', 'site', 'sitenum', 'MDD', 'Group','mean_fd']
 brainRegion = [col for col in combined_df.columns if col not in exclude_cols]
 
 box = []
@@ -28,7 +28,7 @@ for i, region in enumerate(brainRegion):
 
     # 使用 Q() 函数包裹脑区名称，防止如 "46d_L" 这种以数字开头的列名导致公式解析报错
     # C(Group) 和 C(sex) 强制声明其为分类变量
-    formula = f'Q("{region}") ~ C(Group) + age + C(sex)'
+    formula = f'Q("{region}") ~ C(Group) + age + C(sex)+mean_fd'
 
     # 拟合 OLS 模型
     model = smf.ols(formula, data=combined_df).fit()
@@ -60,7 +60,7 @@ result_df = pd.DataFrame({
     'fdr-pvalue': fdr_pvalue,
 })
 
-csv_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Ttest_Region_Subtype1vs2GLM.csv'
+csv_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/Step2_BNA246INT_Ttest/Ttest_Region_Subtype2vsSubtype1_GLM_FD.csv'
 result_df.to_csv(csv_path, index=False)
 print(f"统计结果 CSV 已保存至: {csv_path}")
 
@@ -91,6 +91,6 @@ brain_model_axis = template.header.get_axis(1)
 scalar_header = nib.cifti2.Cifti2Header.from_axes((scalar_axis, brain_model_axis))
 scalar_img = nib.Cifti2Image(label, header=scalar_header)
 
-output_nii = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Ttest_Region_Subtype1vs2GLM_Tvalue.dscalar.nii'
+output_nii = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/Step2_BNA246INT_Ttest/Ttest_Region_Subtype2vsSubtype1GLMFD_Tvalue.dscalar.nii'
 scalar_img.to_filename(output_nii)
 print(f"画图文件 (dscalar) 已保存至: {output_nii}")

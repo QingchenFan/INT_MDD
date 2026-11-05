@@ -20,13 +20,13 @@ from statsmodels.stats.multitest import multipletests
 # 0. 全局配置区 (Global Configuration)
 # =====================================================================
 # --- 输入文件路径 ---
-HC_FILE = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/HC_INT20_agesex.csv"
-SUB1_FILE = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/subtype1_INT_agesex.csv"
-SUB2_FILE = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/subtype2_INT_agesex.csv"  # 亚型2数据文件
+HC_FILE = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/HC_INT20_agesex_FD.csv"
+SUB1_FILE = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/subtype1_INT20_agesex_FD.csv"
+SUB2_FILE = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/subtype2_INT20_agesex_FD.csv"  # 亚型2数据文件
 ATLAS_FILE = "/Users/qingchen/Documents/Data/template/BrainnetomeAtlas/BN_Atlas_246_2mm.nii.gz"
-mark = "pos"
+mark = "neg"
 # --- 输出与缓存目录 ---
-WORK_DIR = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step15_Neurosynth/posneg"
+WORK_DIR = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/Step7_Neurosynth/posneg"
 os.makedirs(WORK_DIR, exist_ok=True)
 DATA_DIR = os.path.join(WORK_DIR, "neurosynth_data")
 os.makedirs(DATA_DIR, exist_ok=True)
@@ -61,9 +61,9 @@ def run_step1_glm(hc_path, sub_path, output_csv, direction="positive"):
     hc_df['group'], sub_df['group'] = 0, 1
     combined_df = pd.concat([hc_df, sub_df], ignore_index=True)
 
-    roi_cols = [col for col in hc_df.columns if col not in ['subID', 'age', 'sex', 'group']]
+    roi_cols = [col for col in hc_df.columns if col not in ['subID', 'age', 'sex', 'group', 'mean_fd']]
 
-    X = combined_df[['group', 'age', 'sex']].copy()
+    X = combined_df[['group', 'age', 'sex', 'mean_fd']].copy()
     X = sm.add_constant(X)
     df_resid = len(combined_df) - X.shape[1]
 
@@ -246,16 +246,16 @@ if __name__ == "__main__":
 
     # ---------------------------------------------------------
     # 【任务 A】分析 Subtype 1 (正向：Subtype 1 > HC)
-    # ---------------------------------------------------------
-    print("\n" + "*" * 50)
-    print("▶️ 开始分析任务 A: Subtype 1 增加的 INT (Positive)")
-    print("*" * 50)
+    # # ---------------------------------------------------------
+    # print("\n" + "*" * 50)
+    # print("▶️ 开始分析任务 A: Subtype 1 增加的 INT (Positive)")
+    # print("*" * 50)
+    #
+    # sub1_glm_out = os.path.join(WORK_DIR, "step1_Subtype1_vs_HC_GLM.csv")
+    # sub1_target_vector = run_step1_glm(HC_FILE, SUB1_FILE, sub1_glm_out, direction="positive")
+    # run_step3_and_4_spatial_null(sub1_target_vector, cognitive_matrix_df, prefix_name="Subtype1_Positive")
 
-    sub1_glm_out = os.path.join(WORK_DIR, "step1_Subtype1_vs_HC_GLM.csv")
-    sub1_target_vector = run_step1_glm(HC_FILE, SUB1_FILE, sub1_glm_out, direction="positive")
-    run_step3_and_4_spatial_null(sub1_target_vector, cognitive_matrix_df, prefix_name="Subtype1_Positive")
-
-    # ---------------------------------------------------------
+    # # ---------------------------------------------------------
     # 【任务 B】分析 Subtype 2 (负向：Subtype 2 < HC)
     # ---------------------------------------------------------
     print("\n" + "*" * 50)
@@ -266,6 +266,6 @@ if __name__ == "__main__":
     sub2_target_vector = run_step1_glm(HC_FILE, SUB2_FILE, sub2_glm_out, direction="negative")
     run_step3_and_4_spatial_null(sub2_target_vector, cognitive_matrix_df, prefix_name="Subtype2_Negative")
 
-    print("\n" + "=" * 60)
-    print("🏆 所有亚型的正/负向功能解码已全部成功执行！")
-    print("=" * 60)
+    # print("\n" + "=" * 60)
+    # print("🏆 所有亚型的正/负向功能解码已全部成功执行！")
+    # print("=" * 60)

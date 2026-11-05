@@ -10,8 +10,8 @@ from scipy.stats import pearsonr
 
 # 获取特征、目标变量和协变量
 def get_xyc(data, ymark):
-    C = data[['age', 'sex']].values
-    X = data.iloc[:, 6:].values  # 从 A8m_L 开始的 246 个脑区
+    C = data[['age', 'sex', 'mean_fd']].values
+    X = data.iloc[:, 7:].values  # 从 A8m_L 开始的 246 个脑区
     y = data[ymark].values
 
     return X, y, C
@@ -30,7 +30,7 @@ def plsr_cv(X, y, C=None, n_splits=5, n_runs=50, control_covariates=True, save_r
         os.makedirs(save_dir)
 
     for run in range(n_runs):
-        kf = KFold(n_splits=n_splits, shuffle=True, random_state=run)
+        kf = KFold(n_splits=n_splits, shuffle=True)  # , random_state=run
         r_scores = []
 
         # 为当前 run 创建专属文件夹
@@ -70,7 +70,7 @@ def plsr_cv(X, y, C=None, n_splits=5, n_runs=50, control_covariates=True, save_r
             # ==========================================
             # 主模型：PLSR (Partial Least Squares Regression)
             # ==========================================
-            model = PLSRegression(n_components=2)  # 关键参数！建议 5~20 之间
+            model = PLSRegression(n_components=3)  # 关键参数！建议 5~20 之间
             # y 需要 reshape 成二维 (n_samples, 1)
             model.fit(X_train_scaled, y_train_final.reshape(-1, 1))
 
@@ -125,7 +125,7 @@ def permutation_test(X, y, C, res, n_permutations=1000, control_covariates=True)
 
 # --- 主执行程序 ---
 if __name__ == '__main__':
-    file_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step5_HAMD_Prediction/subtype2_INT246_HAMD.csv'
+    file_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_Match/Step2_subtype/Step8_HAMD_Prediction/subtype2_INT246_HAMD.csv'
     data = pd.read_csv(file_path)
 
     X, y, C = get_xyc(data, 'HAMD_response')
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     # ==========================================
     USE_COVARIATES = True  # True: 控制协变量 | False: 不控制
     SAVE_RESULTS = True  # True: 开启保存 | False: 不保存
-    SAVE_DIR = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step5_HAMD_Prediction/PLSR'  # 保存结果的根目录
+    SAVE_DIR = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_Match/Step2_subtype/Step8_HAMD_Prediction/PLSR'  # 保存结果的根目录
     # ==========================================
 
     if USE_COVARIATES:
@@ -147,7 +147,7 @@ if __name__ == '__main__':
     # 1. 真实模型评估 (使用 PLSR)
     print("\n[正在运行真实模型并保存结果...]")
     all_r_scores = plsr_cv(X, y, C,
-                           n_splits=5,
+                           n_splits=10,
                            n_runs=101,  # 建议 30~100
                            control_covariates=USE_COVARIATES,
                            save_results=SAVE_RESULTS,

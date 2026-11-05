@@ -1,41 +1,53 @@
 import pandas as pd
 import numpy as np
 from scipy import stats
-import statsmodels.api as sm
-from statsmodels.formula.api import ols
+from statsmodels.stats.anova import AnovaRM  # 【新增】用于重复测量方差分析
 from statsmodels.stats.multitest import multipletests
 import matplotlib.pyplot as plt
 import seaborn as sns
 from itertools import combinations
+
 '''
-    计算 8 个网络间的 INT 差异，画出热力图
+    计算被试内部 8 个网络间的 INT 差异，执行 RM-ANOVA、配对T检验及 FDR 校正，并画出热力图与箱线图
 '''
 # 解决非交互环境下的绘图问题
 plt.rcParams['figure.max_open_warning'] = 50
 import matplotlib
 matplotlib.use('Agg')
 
-# 1. 加载数据 (请确保路径与您的实际文件匹配)
-df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/HC_INT20_7net.csv')
+# 1. 加载数据
+df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_age/INT_40/Step2_subtype/subtype2_INT_7net_agesex_FD.csv')
 
 # 2. 数据转换
-networks = [col for col in df.columns if col != 'subID']
+# 【核心修改 1】：直接明确指定 8 个网络，完美避开 age, sex, mean_fd
+networks = [
+    'subcortical', 'Visual', 'Somatomotor', 'Dorsal_Attention',
+    'Ventral_Attention', 'Limbic', 'Frontoparietal', 'Default'
+]
+
+# 宽表转长表，保留 subID 供被试内分析使用
 df_melt = df.melt(id_vars=['subID'], value_vars=networks, var_name='Network', value_name='Value')
 
-# 3. 单因素方差分析 (ANOVA)
-model = ols('Value ~ C(Network)', data=df_melt).fit()
-anova_table = sm.stats.anova_lm(model, typ=2)
-anova_table.to_csv('./HC_anova_results_fdr.csv')
+# 3. 重复测量方差分析 (RM-ANOVA)
+# 【核心修改 2】：采用被试内设计的方差分析，代替原本的独立样本 ANOVA
+rm_anova = AnovaRM(data=df_melt, depvar='Value', subject='subID', within=['Network']).fit()
+anova_table = rm_anova.anova_table
+# 稍微改一下保存的文件名以作区分
+anova_table.to_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_age/INT_40/Step2_subtype/Step4_NetworkHierarchy/subtype2/subtype2_rm_anova_results.csv')
 
-print("ANOVA 完成，结果已保存为 anova_results_fdr.csv")
+print("RM-ANOVA 完成，结果已保存为 HC_rm_anova_results.csv")
+print("\nRM-ANOVA 统计表:")
+print(anova_table)
+print("-" * 50)
 
-# 4. 事后检验 + FDR 校正
+# 4. 事后检验 (配对 T 检验) + FDR 校正
 pairs = list(combinations(networks, 2))
 results_list = []
 
 for g1, g2 in pairs:
     data1 = df[g1]
     data2 = df[g2]
+    # stats.ttest_rel 是正确的配对 T 检验，无需修改
     stat, p_raw = stats.ttest_rel(data1, data2)
     results_list.append({
         'group1': g1,
@@ -53,14 +65,13 @@ posthoc_df = pd.DataFrame(results_list)
 posthoc_df['p_fdr'] = p_fdr
 posthoc_df['reject_fdr'] = reject
 posthoc_df = posthoc_df.sort_values('p_fdr').reset_index(drop=True)
-posthoc_df.to_csv('./HC_posthoc_fdr_results.csv', index=False)
+posthoc_df.to_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_age/INT_40/Step2_subtype/Step4_NetworkHierarchy/subtype2/subtype2_posthoc_fdr_results.csv', index=False)
 
 print("事后检验 + FDR 完成，结果已保存为 posthoc_fdr_results.csv")
-print(f"共有 {posthoc_df['reject_fdr'].sum()} 对在FDR校正后显著 (p<0.05)")
+print(f"共有 {posthoc_df['reject_fdr'].sum()} 对在FDR校正后显著 (p<0.05)\n")
 
 
 # ====================== 5. 简单箱体图（无显著性标记） ======================
-# 【修改处】: 直接使用 networks，即表格列原始顺序，不再按均值排序
 order = networks
 
 plt.figure(figsize=(14, 8))
@@ -78,8 +89,8 @@ plt.xlabel('Networks')
 plt.ylabel('Value')
 plt.tight_layout()
 
-plt.savefig('./HC_network_boxplot.png', dpi=300, bbox_inches='tight')
-print("简单箱体图已保存为: network_boxplot.png")
+plt.savefig('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_age/INT_40/Step2_subtype/Step4_NetworkHierarchy/subtype2/subtype2_network_boxplot.png', dpi=300, bbox_inches='tight')
+print("简单箱体图已保存为: HC_network_boxplot.png")
 
 
 # ====================== 6. 显著性热力图 (FDR p-value) ======================
@@ -97,7 +108,7 @@ np.fill_diagonal(p_matrix.values, 1.0)
 # 直接按照原始网络的顺序排列行和列
 p_matrix = p_matrix.loc[networks, networks]
 
-# 【核心修改处】：加入 k=1，只隐藏对角线右上方的区域，保留对角线本身
+# 加入 k=1，只隐藏对角线右上方的区域，保留对角线本身
 mask = np.triu(np.ones_like(p_matrix, dtype=bool), k=1)
 
 # 绘图
@@ -116,5 +127,5 @@ plt.xticks(rotation=45, ha='right')
 plt.yticks(rotation=0)
 plt.tight_layout()
 
-plt.savefig('./HC_posthoc_heatmap_fdr.png', dpi=300, bbox_inches='tight')
-print("含对角线的下三角热力图已保存为: posthoc_heatmap_fdr.png")
+plt.savefig('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_age/INT_40/Step2_subtype/Step4_NetworkHierarchy/subtype2/subtype2_posthoc_heatmap_fdr.png', dpi=300, bbox_inches='tight')
+print("含对角线的下三角热力图已保存为: HC_posthoc_heatmap_fdr.png")

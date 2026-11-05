@@ -14,10 +14,10 @@ matplotlib.use('Agg')
 # 1. 读取数据
 # ==========================================
 # 建议修改为您实际的本地 base_dir 路径
-base_dir = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step1_INTRange/Step1_BN246_INTRange/'
-df_hc = pd.read_csv(base_dir + 'HC_BN246INT_Range.csv')
-df1 = pd.read_csv(base_dir + 'subtype1_BN246INT_Range.csv')
-df2 = pd.read_csv(base_dir + 'subtype2_BN246INT_Range.csv')
+base_dir = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_covariate/Step2_subtype/Step4_b_INTRange/'
+df_hc = pd.read_csv(base_dir + 'HC_net_range.csv')
+df1 = pd.read_csv(base_dir + 'subtype1_INT8Net_Range.csv')
+df2 = pd.read_csv(base_dir + 'subtype2_INT8Net_Range.csv')
 
 # ==========================================
 # 2. 添加组别标签并合并数据

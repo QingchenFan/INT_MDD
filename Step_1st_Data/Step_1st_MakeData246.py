@@ -45,32 +45,53 @@ def plot_correlation_matrix(correlation_matrix,labels):
         reorder=True,
     )
     plotting.show()
-def subc_timeseries(data,atlaspath):
+def subc_timeseries(data, atlaspath, brain_axis):
     data = data.transpose(3, 0, 1, 2)
     atlasData = nib.load(atlaspath).get_fdata()
 
-    atlasData = np.reshape(atlasData, (1, 91 * 109 * 91), order='F')
+    # 保留固定的标准空间尺寸
+    if data.shape[1:] != (91, 109, 91):
+        raise ValueError(f"数据空间尺寸错误：{data.shape[1:]}")
+    if atlasData.shape != (91, 109, 91):
+        raise ValueError(f"图谱空间尺寸错误：{atlasData.shape}")
 
-    data = np.reshape(data, (data.shape[0], 91 * 109 * 91), order='F')
+    # CIFTI 实际收录的体素掩膜
+    valid_mask = np.zeros((91, 109, 91), dtype=bool)
+    vox_indices = tuple(
+        brain_axis.voxel[brain_axis.volume_mask].T
+    )
+    valid_mask[vox_indices] = True
 
+    # 三者使用相同的展平顺序，保证位置对应
+    atlasData = np.reshape(
+        atlasData, (1, 91 * 109 * 91), order='F'
+    )
+    data = np.reshape(
+        data, (data.shape[0], 91 * 109 * 91), order='F'
+    )
+    valid_mask = np.reshape(
+        valid_mask, (1, 91 * 109 * 91), order='F'
+    )
     roilist = []
     for r in range(211, 247):
+        # 同时属于该脑区，并且被 CIFTI 收录
+        index = np.where((atlasData == r) & valid_mask)
+        roi = data[:, index[1]]
 
-        index = np.where(atlasData == r)
-
-        roi = data[:, index[1]]  # 将第r个脑区中的voxel 数据（时间序列）提取
-
-        # 统计体素个数
-        totalvoxel = roi.shape[1] if roi.shape[1] > 0 else 1
-
-        sum = np.sum(roi, axis=1)
-
-        roiBoldsum = sum / totalvoxel
-
-        roilist.append(roiBoldsum)
-
+        total = np.count_nonzero(atlasData == r)
+        covered = roi.shape[1]
+        coverage = covered / total if total else 0.0
+        print(
+            f"ROI {r}: 有效体素 {covered}/{total}, "
+            f"覆盖率 {coverage:.1%}"
+        )
+        if covered == 0:
+            raise ValueError(f"ROI {r} 没有有效体素")
+        roiBoldmean = np.mean(roi, axis=1)
+        roilist.append(roiBoldmean)
     subctimeseries = np.array(roilist)
     print('subctimeseries.shape-', subctimeseries.shape)
+
     subcFC = np.corrcoef(subctimeseries)
     return subcFC, subctimeseries
 
@@ -83,7 +104,7 @@ def calculate_FC(dpath, tpath, atlaspath, regions):
 
     Subcortical_Data = volume_from_cifti(cifti_data, axes[1])
     Subcortical_Data = Subcortical_Data.get_fdata()
-    _, subctimeseries = subc_timeseries(Subcortical_Data, atlaspath)
+    _, subctimeseries = subc_timeseries(Subcortical_Data, atlaspath,axes[1])
     # savemat('./subcFC.mat', {'data': subcFC})
     # savemat('./subctimeseries.mat', {'data': subctimeseries})
 

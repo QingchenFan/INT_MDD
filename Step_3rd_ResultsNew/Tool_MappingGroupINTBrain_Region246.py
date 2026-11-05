@@ -4,11 +4,11 @@ import nibabel as nib
 
 # 1. 路径设置
 # 之前步骤生成的包含均值的 CSV 文件
-csv_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/subtype2_brain_regions_mean_INT.csv'
+csv_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_FirstRe_covariate/First_new/subtype2_meanINT.csv'
 # 您的大脑模板路径
 tpath = '/Users/qingchen/Documents/Data/template/BrainnetomeAtlas/BN_Atlas_freesurfer/fsaverage/fsaverage_LR32k/fsaverage.BN_Atlas.32k_fs_LR.dlabel.nii'
 # 输出的 dscalar 文件路径
-output_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/subtype2_meanINT.dscalar.nii'
+output_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_FirstRe_covariate/First_new/subtype2_meanINT.dscalar.nii'
 
 # 2. 读取 CSV 数据
 df = pd.read_csv(csv_path)

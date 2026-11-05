@@ -2,8 +2,8 @@ import pandas as pd
 from scipy import stats
 
 # 1. 加载数据
-hc_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Test/HC_INT20_7net_agesex.csv')
-mdd_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Test/MDD_INT20_7net_agesex_I.csv')
+hc_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_Match/HC_INT20_7net_agesex_FD.csv')
+mdd_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_Match/MDD_agesex_balanced.csv')
 
 # --- 2. 年龄 (Age) 的 t 检验 ---
 # 提取年龄数据并排除缺失值

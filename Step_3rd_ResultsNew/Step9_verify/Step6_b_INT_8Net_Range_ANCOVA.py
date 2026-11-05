@@ -14,7 +14,7 @@ matplotlib.use('Agg')
 # 1. 读取数据
 # ==========================================
 # 建议修改为您实际的本地 base_dir 路径
-base_dir = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/Step5_Range_Diff/'
+base_dir = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/INT_covariate/Step5_Range_Diff/'
 df_hc = pd.read_csv(base_dir + 'HC_DZ_INT_8net_Range.csv')
 df1 = pd.read_csv(base_dir + 'subtype1_DZ_INT_8net_Range.csv')
 df2 = pd.read_csv(base_dir + 'subtype2_DZ_INT_8net_Range.csv')

@@ -17,7 +17,7 @@ def get_xyc(data, ymark):
     C = data[['age', 'sex']].values
 
     # 提取特征 X: 从第8列开始（A8m_L 开始的246个脑区）
-    X = data.iloc[:, 6:].values
+    X = data.iloc[:, 7:].values
 
     # 提取目标变量 y（不做残差化）
     y = data[ymark].values
@@ -108,7 +108,7 @@ def permutation_test(X, y, C, res, n_permutations=1000, control_covariates=True)
 
 # --- 主执行程序 ---
 if __name__ == '__main__':
-    file_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step5_HAMD_Prediction/subtype2_INT246_HAMD.csv'
+    file_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_Match/Step2_subtype/Step8_HAMD_Prediction/subtype2_INT246_HAMD.csv'
     data = pd.read_csv(file_path)
 
     X, y, C = get_xyc(data, 'HAMD_response')
@@ -126,7 +126,7 @@ if __name__ == '__main__':
         print("\n--- 当前模式：不控制协变量 (直接预测) ---")
 
     # 1. 真实模型评估 (使用 SVR)
-    all_r_scores = svr_cv(X, y, C, n_splits=5, n_runs=101, control_covariates=USE_COVARIATES)
+    all_r_scores = svr_cv(X, y, C, n_splits=10, n_runs=101, control_covariates=USE_COVARIATES)
 
     res = np.median(all_r_scores)
     print(f'真实预测 r 值 (Median over {len(all_r_scores)} runs): {res:.4f}')
@@ -135,4 +135,4 @@ if __name__ == '__main__':
     pvalue = permutation_test(X, y, C, res,
                               n_permutations=1000,
                               control_covariates=USE_COVARIATES)
-    print(f'置换检验 P-value: {pvalue:.4f}')
+    print(f'置换检验 P-value: {pvalue: .4f}')

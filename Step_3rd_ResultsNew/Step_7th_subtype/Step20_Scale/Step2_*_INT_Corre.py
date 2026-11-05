@@ -105,13 +105,13 @@ def partial_correlation_analysis(df_path, var_x, var_y, covariates, alpha=0.05):
 
 # ================= 测试调用示例 =================
 if __name__ == "__main__":
-    path = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step1_INTSlope/Slope_Scale_Corr/subtype1_slope_HCL.csv"
+    path = "/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_covariate/Step2_subtype/Step4_a_INTVariance/subtype1_variance_HAMA.csv"
 
 
     res = partial_correlation_analysis(
         df_path=path,
-        var_x='slope',
-        var_y='HCL_sum',
+        var_x='variance',
+        var_y='HAMA',
         covariates=['age', 'sex', 'mean_fd'],
         alpha=0.05
     )

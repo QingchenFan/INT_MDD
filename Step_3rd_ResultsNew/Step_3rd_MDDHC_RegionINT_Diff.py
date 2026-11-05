@@ -5,8 +5,8 @@ import statsmodels.formula.api as smf
 import statsmodels.stats.multitest as smm
 
 # 1. 加载数据
-HCData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/HC_INT20_agesex.csv')
-MDDData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/MDD_INT20_agesex.csv')
+HCData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_Match/HC_INT20_agesex_FD.csv')
+MDDData = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_Match/MDD_INT20_agesex_FD.csv')
 
 # 2. 合并数据并添加组别标签（为了使用 OLS 控制协变量）
 HCData['Group'] = 'HC'
@@ -14,7 +14,7 @@ MDDData['Group'] = 'MDD'
 combined_df = pd.concat([HCData, MDDData], ignore_index=True)
 
 # 3. 提取脑区列名（自动排除 subID, age, sex, Group 等非脑区特征列）
-covariates = ['subID', 'age', 'sex', 'Group']
+covariates = ['subID', 'age', 'sex', 'Group', 'mean_fd']
 brainRegion = [col for col in combined_df.columns if col not in covariates]
 
 box = []
@@ -28,7 +28,7 @@ for i, region in enumerate(brainRegion):
 
     # 使用 Q() 函数包裹脑区名称，防止如 "46d_L" 这种以数字开头的列名导致公式解析报错
     # C(Group) 和 C(sex) 强制声明其为分类变量
-    formula = f'Q("{region}") ~ C(Group) + age + C(sex)'
+    formula = f'Q("{region}") ~ C(Group) + age + C(sex) + mean_fd'
 
     # 拟合 OLS 模型
     model = smf.ols(formula, data=combined_df).fit()
@@ -59,7 +59,7 @@ result_df = pd.DataFrame({
     'fdr-pvalue': fdr_pvalue,
 })
 
-csv_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/Ttest_Region_HCMDDGLM.csv'
+csv_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_Match/Step2_Ttest/Ttest_Region_HCMDDGLM.csv'
 result_df.to_csv(csv_path, index=False)
 print(f"统计结果 CSV 已保存至: {csv_path}")
 
@@ -87,6 +87,6 @@ brain_model_axis = template.header.get_axis(1)
 scalar_header = nib.cifti2.Cifti2Header.from_axes((scalar_axis, brain_model_axis))
 scalar_img = nib.Cifti2Image(label, header=scalar_header)
 
-output_nii = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/Ttest_Region_HCMDDGLM.dscalar.nii'
+output_nii = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_Match/Step2_Ttest/Ttest_Region_HCMDDGLM.dscalar.nii'
 scalar_img.to_filename(output_nii)
 print(f"画图文件 (dscalar) 已保存至: {output_nii}")

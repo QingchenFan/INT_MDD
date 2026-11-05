@@ -3,7 +3,7 @@ import statsmodels.api as sm
 from statsmodels.stats.multitest import multipletests
 
 # 1. 数据加载与准备
-mdd_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/subtype1_INT_agesex_FD.csv')
+mdd_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_covariate/Step2_subtype/subtype2_INT20_agesex_FD.csv')
 hc_df = pd.read_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step2_Ttest/HC_INT20_agesex_FD.csv')
 mdd_df['group'] = 1
 hc_df['group'] = 0
@@ -35,5 +35,5 @@ stats_df['q_val'] = q_vals
 # ---> 【重点】5.1 导出用于 PLS 基因关联分析的数据 (Unthresholded) <---
 # 完全保留 246 个脑区原始连绵起伏的 Z 值，确保空间连续协方差不被破坏
 pls_export_df = stats_df[['region', 'z_stat']]
-pls_export_df.to_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step18_Genetic/result1_zmap/subtype1_z_map.csv', index=False)
+pls_export_df.to_csv('/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_covariate/Step2_subtype/Step18_Genetic/result1_zmap/subtype2_z_map.csv', index=False)
 

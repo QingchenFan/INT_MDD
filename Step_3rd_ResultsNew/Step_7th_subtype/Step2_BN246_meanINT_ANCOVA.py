@@ -10,7 +10,7 @@ matplotlib.use('Agg')
 # =========================================================
 # 1. 读取文件与数据合并
 # =========================================================
-base_dir = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_subtype/Step2_BN246mean_INT/'
+base_dir = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/Step2_BN246mean_INT/'
 # 注意：请确保以下读取的csv文件中都包含 'mean_fd' 列
 df_hc = pd.read_csv(base_dir + 'HC_BN246_meanINT_agesex_FD.csv')
 df_s1 = pd.read_csv(base_dir + 'subtype1_mean_INT_agesex_FD.csv')

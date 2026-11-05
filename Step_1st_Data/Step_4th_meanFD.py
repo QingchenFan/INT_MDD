@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # 你的原始路径
-path = '/Volumes/ZLabData/BrainProject/brainproject_II/fmriprep/HC_DZ_1/sub-*V01/func/sub-*V01_task-rest_desc-confounds_timeseries.tsv'
+path = '/Volumes/QC/Data/BN246timeseries_surface/HC/BP_III/sub-*V01/sub-*V01_task-rest_acq-ap_run-1_desc-confounds_timeseries.tsv'
 #path = "/Volumes/ZLabData/BrainProject/brainproject_II/fmriprep/MDD_DZ_1/sub-*V01/func/sub-*V01_task-rest_desc-confounds_timeseries.tsv"
 fl = glob.glob(path)
 
@@ -14,10 +14,8 @@ for i in fl:
     if not os.path.exists(i):
         continue
 
-    if 'sub-07000043V01' in i:
-        continue
     # 提取被试ID
-    sub_id = i.split('/')[-3]
+    sub_id = i.split('/')[-2]
     print(sub_id)
     # 读取 tsv 文件
     conf = pd.read_csv(i, sep='\t')
@@ -47,4 +45,4 @@ df_results = pd.DataFrame(mean_fd_results)
 print(df_results.head())
 
 # 保存结果
-df_results.to_csv('DZ_HC_subjects_mean_fd2.csv', index=False)
+df_results.to_csv('BPIII_HC_mean_fd.csv', index=False)

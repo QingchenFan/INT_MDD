@@ -7,9 +7,9 @@ from scipy.io import savemat
 template = '/Users/qingchen/Documents/Data/template/BrainnetomeAtlas/BN_Atlas_246_2mm.nii.gz'
 BNData = nib.load(template)
 templateData = BNData.get_fdata()
+templateData = templateData[::-1, :, :]  # 因为BNA atlas affine和xcpd输出数据文件的affine不一样，所以需要翻转一下
 templateData = np.reshape(templateData, (1, 91 * 109 * 91), order='F')
 #savemat('./templateData.mat', {'data': templateData})
-
 boldpath = '/Volumes/QC/Data/VolumeData/Data135/MDD/*/*.nii.gz'
 bolddata = glob.glob(boldpath)
 for i in bolddata:
@@ -26,8 +26,8 @@ for i in bolddata:
 
         totalvoxel = roi.shape[1]    # 统计体素个数
 
-        sum = np.sum(roi, axis=1)
-        roiBoldsum = sum / totalvoxel
+        roi_sum = np.sum(roi, axis=1)
+        roiBoldsum = roi_sum / totalvoxel
 
         roilist.append(roiBoldsum)
     newpath = "/Volumes/QC/Data/VolumeData/Data135/MDD_BN246timeseries/" + subID

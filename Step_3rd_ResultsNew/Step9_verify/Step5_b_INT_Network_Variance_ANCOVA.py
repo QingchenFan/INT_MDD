@@ -12,14 +12,14 @@ import seaborn as sns
 matplotlib.use('Agg')
 
 # 统一定义输出基础路径，方便后续拼写文件名
-base_dir = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/Step4_Variance_Diff/'
+base_dir = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_verify/INT_covariate/Step4_Variance_Diff/'
 
 # =========================================================
 # 1. 读取文件与数据合并
 # =========================================================
-df_hc = pd.read_csv(base_dir + 'HC_network_variances.csv')
-df_s1 = pd.read_csv(base_dir + 'subtype1_network_variances.csv')
-df_s2 = pd.read_csv(base_dir + 'subtype2_network_variances.csv')
+df_hc = pd.read_csv(base_dir + 'HC_INT_7net_variance.csv')
+df_s1 = pd.read_csv(base_dir + 'subtype1_INT_7net_variance.csv')
+df_s2 = pd.read_csv(base_dir + 'subtype2_INT_7net_variance.csv')
 
 # 提取需要的列 (假设 HC 文件里的 age/sex 列名已经是 age, sex)
 df_hc = df_hc[['subID', 'mean_fd', 'age', 'sex', 'variance']]

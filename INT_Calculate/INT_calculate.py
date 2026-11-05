@@ -8,7 +8,7 @@ def acf_curve(icas,nlags):
 # def intrinic_timescale_interp(intter):
 #     # autocorr = stattools.acf(ica)
 #     return np.sum(intter[1:list(intter<0).index(True)])
-def intrinic_timescale_interp(intter):
+def intrinic_timescale_interp(intter,TR=1):
     """
     计算 Intrinsic Timescale
     如果 ACF 一直为正，则累加所有正的部分（或做适当衰减）
@@ -16,14 +16,14 @@ def intrinic_timescale_interp(intter):
     try:
         # 正常情况：找到第一个负值的位置
         first_neg = list(intter < 0).index(True)
-        return np.sum(intter[1:first_neg])
+        return TR * np.sum(intter[1:first_neg])
 
     except ValueError:
         # 异常情况：ACF 全为正数
         # 方案1（推荐）：直接累加所有 lag（从1开始）
-        return np.sum(intter[1:])
+        return TR * np.sum(intter[1:])
 
-datapath = "/Volumes/QC/Data/BN246timeseries_surface/MDD/DZ/sub-*/*.txt"
+datapath = "/Volumes/QC/Data/BN246timeseries_surface/HC/BP_III/sub-*/*.txt"
 data = glob.glob(datapath)
 results = []
 nlags = 20
@@ -55,4 +55,4 @@ for i in data:
 
 # 构建DataFrame并保存
 df = pd.DataFrame(results)
-df.to_csv("./MDD_DZ_INT.csv", index=False, encoding="utf-8")
+df.to_csv("./BP_III_HC_INT.csv", index=False, encoding="utf-8")

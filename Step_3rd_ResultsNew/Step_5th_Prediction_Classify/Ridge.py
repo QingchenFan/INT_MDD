@@ -9,7 +9,7 @@ from scipy.stats import pearsonr
 # 获取特征、目标变量和协变量
 def get_xyc(data, ymark):
     C = data[['age', 'sex']].values
-    X = data.iloc[:, 6:].values          # 从 A8m_L 开始的 246 个脑区
+    X = data.iloc[:, 7:].values          # 从 A8m_L 开始的 246 个脑区
     y = data[ymark].values
     return X, y, C
 
@@ -92,7 +92,7 @@ def permutation_test(X, y, C, res, n_permutations=1000, control_covariates=True)
 
 # --- 主执行程序 ---
 if __name__ == '__main__':
-    file_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/Step4_scale/MDD_INT20_0w8wHAMD.csv'
+    file_path = '/Volumes/QC/INT/INT_BN246_HC135BP_MDD135BP_DZIII/INT_test/Step2_subtype/Step8_HAMD_Prediction/subtype2_INT246_HAMD.csv'
     data = pd.read_csv(file_path)
 
     X, y, C = get_xyc(data, 'HAMD_response')
@@ -112,7 +112,7 @@ if __name__ == '__main__':
     # 1. 真实模型评估 (使用 Ridge)
     all_r_scores = ridge_cv(X, y, C,
                             n_splits=5,
-                            n_runs=50,           # 建议至少 30~50
+                            n_runs=101,           # 建议至少 30~50
                             control_covariates=USE_COVARIATES)
 
     # 使用平均值（推荐） + 打印更多统计信息
@@ -121,11 +121,11 @@ if __name__ == '__main__':
     res_std = np.std(all_r_scores)
 
     print(f'所有 {len(all_r_scores)} 次重复 CV 的平均 r 值 (Mean): {res_mean:.4f}')
-    print(f'中位数 r 值 (Median): {res_median:.4f}')
-    print(f'标准差 (Std): {res_std:.4f}')
+    print(f'中位数 r 值 (Median): {res_median: .4f}')
+    print(f'标准差 (Std): {res_std: .4f}')
 
     # 2. 置换检验
     pvalue = permutation_test(X, y, C, res_mean,   # 注意这里传入 mean
                               n_permutations=1000,
                               control_covariates=USE_COVARIATES)
-    print(f'置换检验 P-value: {pvalue:.4f}')
+    print(f'置换检验 P-value: {pvalue: .4f}')
